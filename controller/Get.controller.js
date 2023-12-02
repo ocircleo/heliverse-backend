@@ -14,6 +14,10 @@ const { userModel } = require("../model/userSchema");
 // });
 // const database = client.db("heliverse");
 // const users = database.collection("users");
+const estimate = async (req, res, next) => {
+  const result = await userModel.countDocuments();
+  res.send({ totalUser: result });
+};
 const getUsers = async (req, res, next) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 12;
@@ -54,4 +58,4 @@ const getGroup = async (req, res, next) => {
     });
   }
 };
-module.exports = { getUsers, getSingleUser, getGroup };
+module.exports = { getUsers, getSingleUser, getGroup, estimate };
