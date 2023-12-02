@@ -1,11 +1,23 @@
 const { groupModel } = require("../model/groupSchema");
 const { userModel } = require("../model/userSchema");
+// const { MongoClient, ServerApiVersion } = require("mongodb");
+// require("dotenv").config();
 
+// const uri = `mongodb+srv://${process.env.DB_USER_NAME}:${process.env.DB_USER_PASSWORD}@ocircleo.zgezjlp.mongodb.net/?retryWrites=true&w=majority`;
+// // Create a MongoClient with a MongoClientOptions object to set the Stable API version
+// const client = new MongoClient(uri, {
+//   serverApi: {
+//     version: ServerApiVersion.v1,
+//     strict: true,
+//     deprecationErrors: true,
+//   },
+// });
+// const database = client.db("heliverse");
+// const users = database.collection("users");
 const getUsers = async (req, res, next) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 12;
   const skip = (page - 1) * limit;
-
   try {
     const response = await userModel.find().limit(limit).skip(skip);
     if (response) {

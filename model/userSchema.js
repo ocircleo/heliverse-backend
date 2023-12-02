@@ -19,7 +19,7 @@ const userSchema = new mongoose.Schema({
   available: Boolean,
 });
 
-const userModel = mongoose.model("users", userSchema, "users");
+const userModel = mongoose.model("users", userSchema);
 module.exports = {
   userModel,
 };
