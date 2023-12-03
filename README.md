@@ -2,7 +2,7 @@
 
 Backend api link : https://heliverse-omega.vercel.app/
 
-## For the viewr
+## For the viwer
 Due to insufficeint time, an good api doc and 404 page was not 
 creted. 
 Thank you.
