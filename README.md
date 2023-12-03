@@ -3,8 +3,8 @@
 Backend api link : https://heliverse-omega.vercel.app/
 
 ## For the viewer
-Due to insufficeint time, an good api doc and 404 page was not 
-creted. 
+Due to insufficeint time, an good api doc and 404 page was not creted. 
+
 Thank you.
 salman
 email: salmanhossain11222626@gmail.com
