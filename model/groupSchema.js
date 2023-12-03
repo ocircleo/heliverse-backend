@@ -23,10 +23,6 @@ const groupSchema = new mongoose.Schema({
     default: [],
     required: true,
   },
-  group_domain: {
-    type: String,
-    required: true,
-  },
 });
 const groupModel = mongoose.model("groups", groupSchema);
 module.exports = {

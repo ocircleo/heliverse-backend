@@ -1,19 +1,6 @@
 const { groupModel } = require("../model/groupSchema");
 const { userModel } = require("../model/userSchema");
-// const { MongoClient, ServerApiVersion } = require("mongodb");
-// require("dotenv").config();
 
-// const uri = `mongodb+srv://${process.env.DB_USER_NAME}:${process.env.DB_USER_PASSWORD}@ocircleo.zgezjlp.mongodb.net/?retryWrites=true&w=majority`;
-// // Create a MongoClient with a MongoClientOptions object to set the Stable API version
-// const client = new MongoClient(uri, {
-//   serverApi: {
-//     version: ServerApiVersion.v1,
-//     strict: true,
-//     deprecationErrors: true,
-//   },
-// });
-// const database = client.db("heliverse");
-// const users = database.collection("users");
 const estimate = async (req, res, next) => {
   const result = await userModel.countDocuments();
   res.send({ totalUser: result });
@@ -22,15 +9,50 @@ const getUsers = async (req, res, next) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 12;
   const skip = (page - 1) * limit;
-  try {
-    const response = await userModel.find().limit(limit).skip(skip);
-    if (response) {
-      res.status(200).send(response);
-    } else {
-      res.status(404).send({ message: "not found" });
+  let text = req.query.text;
+  let domain, available, gender;
+  domain = req.query.domain;
+  available = req.query.available;
+  gender = req.query.gender;
+  const query = [];
+  if (domain != "null") {
+    query.push({ domain: domain });
+  }
+  if (gender != "null") {
+    query.push({ gender: gender });
+  }
+  if (available != "null") {
+    query.push({ available: Boolean(available) });
+  }
+  if (text != "null") {
+    console.log("in text");
+    try {
+      const response = await userModel
+        .find({
+          $and: [{ first_name: { $regex: new RegExp(text, "i") } }, ...query],
+        })
+        .limit(limit)
+        .skip(skip);
+      if (response) {
+        res.status(200).send(response);
+      } else {
+        res.status(404).send({ message: "not found" });
+      }
+    } catch (error) {
+      res.send(error);
     }
-  } catch (error) {
-    res.send(error);
+  } else {
+    console.log("over hare");
+    try {
+      const response = await userModel.find().limit(limit).skip(skip);
+      if (response) {
+        res.status(200).send(response);
+      } else {
+        res.status(404).send({ message: "not found" });
+      }
+    } catch (error) {
+      res.send(error);
+    }
   }
 };
 const getSingleUser = async (req, res, next) => {
@@ -49,7 +71,7 @@ const getSingleUser = async (req, res, next) => {
 const getGroup = async (req, res, next) => {
   const email = req.params.email;
   try {
-    const result = groupModel.findOne({ group_admin_email: email });
+    const result = await groupModel.find({ group_admin_email: email });
     res.status(201).send(result);
   } catch (error) {
     res.status(301).send({
@@ -58,4 +80,19 @@ const getGroup = async (req, res, next) => {
     });
   }
 };
-module.exports = { getUsers, getSingleUser, getGroup, estimate };
+const search = async (req, res, next) => {
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 12;
+  const skip = (page - 1) * limit;
+  try {
+    const response = await userModel.find().limit(limit).skip(skip);
+    if (response) {
+      res.status(200).send(response);
+    } else {
+      res.status(404).send({ message: "not found" });
+    }
+  } catch (error) {
+    res.send(error);
+  }
+};
+module.exports = { getUsers, getSingleUser, getGroup, estimate, search };

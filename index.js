@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 const cors = require("cors");
+const jwt = require("jsonwebtoken");
 const { default: mongoose } = require("mongoose");
 const port = process.env.PORT || 3001;
 const path = require("path");
@@ -8,6 +9,7 @@ const getRoutes = require("./routes/getRoutes");
 const postRoutes = require("./routes/postRoutes");
 const putRoutes = require("./routes/putRoutes");
 const deleteRoutes = require("./routes/deleteRoutes");
+const data = require("./heliverse_mock_data.json");
 //middlerwere
 app.use(cors());
 app.use(express.json());
@@ -28,6 +30,33 @@ db.once("open", () => {
 });
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "/views/index.html"));
+});
+//Jwt token request
+app.post("/jwt", (req, res) => {
+  const user = req.body;
+  const token = jwt.sign(user, process.env.ACCES_TOKEN_SECRET, {
+    expiresIn: "24h",
+  });
+  res.send({ token });
+});
+app.get("/test", (req, res) => {
+  const length = data.length;
+  const resultall = {};
+  async function seeDataCatgory(num) {
+    if (num == length) return res.send(resultall);
+    if (num < length) {
+      let domain = data[num].gender;
+      if (resultall[domain]) {
+        resultall[domain];
+        resultall[domain]++;
+      } else {
+        resultall[domain] = 1;
+      }
+      // console.log(resultall);
+      await seeDataCatgory(num + 1);
+    }
+  }
+  seeDataCatgory(0);
 });
 //Routes
 app.use("/api/get", getRoutes);

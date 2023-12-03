@@ -54,14 +54,12 @@ const updateUser = async (req, res, next) => {
   }
 };
 const addToGroup = async (req, res, next) => {
-  const id = req.body._id;
-  const userId = req.body.userId;
+  const id = req.body.id;
+  const users = req.body.newmembers;
   try {
     const result = await groupModel.findByIdAndUpdate(
       { _id: id },
-      {
-        $push: { members: userId },
-      },
+      { $addToSet: { members: { $each: users } } },
       { new: true }
     );
     res.status(201).send(result);
