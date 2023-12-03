@@ -22,10 +22,9 @@ const getUsers = async (req, res, next) => {
     query.push({ gender: gender });
   }
   if (available != "null") {
-    query.push({ available: Boolean(available) });
+    query.push({ available: available });
   }
   if (text != "null") {
-    console.log("in text");
     try {
       const response = await userModel
         .find({
@@ -42,9 +41,11 @@ const getUsers = async (req, res, next) => {
       res.send(error);
     }
   } else {
-    console.log("over hare");
     try {
-      const response = await userModel.find().limit(limit).skip(skip);
+      const response = await userModel
+        .find(...query)
+        .limit(limit)
+        .skip(skip);
       if (response) {
         res.status(200).send(response);
       } else {

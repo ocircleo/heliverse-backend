@@ -52,6 +52,23 @@ const login = async (req, res, next) => {
     });
   }
 };
+const autoLogin = async (req, res, next) => {
+  let email = req.body.email;
+  const decodedEmail = req.decoded.email;
+  if (email == decodedEmail) {
+    try {
+      const user = await userModel.findOne({ email: email });
+      res.send(user);
+    } catch (error) {
+      res.send({
+        error: true,
+        message: error,
+      });
+    }
+  } else {
+    res.status(404).send({ error: true, message: "Unauthorized acces" });
+  }
+};
 const makegroup = async (req, res, next) => {
   const body = req.body;
   const result = new groupModel(body);
@@ -69,4 +86,5 @@ module.exports = {
   register,
   login,
   makegroup,
+  autoLogin,
 };
